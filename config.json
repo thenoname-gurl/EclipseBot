@@ -3,7 +3,15 @@
   "logchannelID": "1397944040439418880",
   "ticketlogID": "1397944040439418880",
   "ticketID": "1094922348697763890",
+  "ticketPanelChannelID": "1457427992497361113",
+  "ticketPanelMessage": "React with 🎟️ to create a ticket.\nWe still recommend using <https://eclipsesystems.top/account/tickets>.",
+  "paypalAddress": "example@example.com",
   "staffAccessRoleID": "1382396536746541156",
+  "supportStaffRoleID": "1457415843909730608",
+  "customersServerID": "1457415271944818764",
+  "customersStaffRoleID": "1457415843909730608",
+  "ticketSupportCategoryID": "1457417750979805267",
+  "ticketCostumerCategoryID": "1457415561503047764",
   "debug": "1",
   "botID": "1286395056911028314",
   "botServerID": "674974169485672449",
@@ -24,6 +32,12 @@
   "rolecooldown": {
     "1382396536746541156": {
       "bansperday": 100,
+      "kicksperday": 100,
+      "timeoutsperday": 100,
+      "unbansperday": 100
+    },
+    "1457415843909730608": {
+      "bansperday": 10,
       "kicksperday": 100,
       "timeoutsperday": 100,
       "unbansperday": 100

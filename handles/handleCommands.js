@@ -34,16 +34,24 @@ module.exports = (client) => {
             const rest = new REST({ version: '9' }).setToken(process.env.token);
             (async () => {
                 try {
-                    const route = gconfig.botServerID
-                        ? Routes.applicationGuildCommands(clientId, gconfig.botServerID)
-                        : Routes.applicationCommands(clientId);
-
-                    await rest.put(route, { body: client.commandArray });
-                    console.log(
-                        gconfig.botServerID
-                            ? 'Successfully pushed guild slash commands.'
-                            : 'Successfully pushed global slash commands.'
+                    const guildIds = new Set(
+                        [gconfig.botServerID, gconfig.customersServerID]
+                            .map(x => String(x || '').trim())
+                            .filter(Boolean)
                     );
+
+                    if (guildIds.size === 0) {
+                        const route = Routes.applicationCommands(clientId);
+                        await rest.put(route, { body: client.commandArray });
+                        console.log('Successfully pushed global slash commands.');
+                        return;
+                    }
+
+                    for (const guildId of guildIds) {
+                        const route = Routes.applicationGuildCommands(clientId, guildId);
+                        await rest.put(route, { body: client.commandArray });
+                        console.log(`Successfully pushed guild slash commands: ${guildId}`);
+                    }
                 } catch (err) {
                     console.error(err);
                 }

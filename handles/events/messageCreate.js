@@ -40,6 +40,19 @@ module.exports = {
     name: 'messageCreate',
     once: false,
     async execute(message, client) {
+        try {
+            const panelChannelId = String(gconfig?.ticketPanelChannelID || '').trim();
+            const botId = client?.user?.id || String(gconfig?.botID || '').trim();
+            if (panelChannelId && botId && message?.channelId === panelChannelId) {
+                if (message.author?.id !== botId) {
+                    try {
+                        await message.delete();
+                    } catch {}
+                    return;
+                }
+            }
+        } catch {}
+
         if (!message.author?.bot && message.guild) {
             try {
                 const { level, leveledUp } = levelSystem.addXP(message.author.id, MESSAGE_XP);

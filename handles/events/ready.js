@@ -2,6 +2,43 @@ const fs = require('fs');
 const { ActivityType } = require('discord.js')
 const {ThreadManager} = require('discord-tickets');
 const grantPendingInviteXp = require('../xp/inviteXpGrantJob');
+
+async function ensureTicketPanel(client) {
+    const channelId = String(gconfig.ticketPanelChannelID || '').trim();
+    if (!channelId) return;
+
+    let channel;
+    try {
+        channel = await client.channels.fetch(channelId);
+    } catch {
+        return;
+    }
+    if (!channel || !channel.isTextBased?.()) return;
+
+    try {
+        let lastId;
+        for (let i = 0; i < 20; i++) {
+            const fetched = await channel.messages.fetch({ limit: 100, before: lastId });
+            if (!fetched.size) break;
+            for (const msg of fetched.values()) {
+                try {
+                    await msg.delete();
+                } catch {}
+            }
+            lastId = fetched.last()?.id;
+        }
+    } catch {}
+
+    try {
+        const content = String(gconfig.ticketPanelMessage || 'React with 🎟️ to create a ticket.');
+        const panelMessage = await channel.send({ content });
+        client.ticketPanelMessageId = panelMessage.id;
+        try {
+            await panelMessage.react('🎟️');
+        } catch {}
+    } catch {}
+}
+
 module.exports = {
     name: 'ready',
     once: true,
@@ -13,10 +50,13 @@ module.exports = {
         client.ticketManager = new ThreadManager(client, {
             enabled: true,
             channelId: gconfig.ticketID,
-            staffRole: gconfig.staffAccessRoleID,
+            staffRole: gconfig.supportStaffRoleID || gconfig.staffAccessRoleID || gconfig.customersStaffRoleID,
             storage: `../../../tickets.json`,
             ticketCache: true
         });
+
+        await ensureTicketPanel(client);
+
         if (client.test) {
             process.exit(0)
         }
