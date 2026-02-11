@@ -177,12 +177,12 @@ module.exports = {
         // 2026 - I was funnier back in the day? - Noname
         if (message.content.match(/later/i)) {
             if (message.author.id === '674972845671186459') {
-                    message.reply(`*You mean never?*`)
+                    message.reply(`*...you mean never?*`)
             }
         }
         if (message.content.match(/lazy/i)) {
             if (message.author.id === '674972845671186459') {
-                    message.reply(`*You are to lazy..*`)
+                    message.reply(`*You're always too lazy..*`)
             }
         }
         flaggedMessage = false
